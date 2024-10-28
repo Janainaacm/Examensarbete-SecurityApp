@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "safety-app",
-    "slug": "safety-app",
+    "slug": "examensarbete",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "616c5804-c1f1-480f-a399-37bedaae0357"
+      }
+    },
+    "owner": "janainaacm"
   }
 }
