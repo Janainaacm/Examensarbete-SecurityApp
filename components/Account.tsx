@@ -4,7 +4,7 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 
-export default function Account({ session }: { session: Session }) {
+export default function Account({ session }: { session: Session }, { onComplete }: {onComplete: boolean}) {
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('')
   const [firstname, setFirstname] = useState('')
@@ -35,7 +35,6 @@ export default function Account({ session }: { session: Session }) {
         setUsername(data.username)
         setFirstname(data.firstname)
         setLastname(data.lastname)
-        //setEmail(data.email)
         setPhonenumber(data.phonenumber)
       }
     } catch (error) {
