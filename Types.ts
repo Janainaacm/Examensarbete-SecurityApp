@@ -1,10 +1,11 @@
 
 export interface UserInterface {
-    _id: string,
+    _id?: string,
     username: string,
     firstName: string,
     lastName: string,
     email: string,
+    password?: string,
     phoneNumber: string,
     cancelAlarmCode: number,
     customDangerMessage: string,

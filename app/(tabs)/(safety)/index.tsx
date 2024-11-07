@@ -1,5 +1,4 @@
 import { View, Text, Pressable } from "react-native"
-import { Link, router } from 'expo-router'
 
 const Safety = () => {
     return (
