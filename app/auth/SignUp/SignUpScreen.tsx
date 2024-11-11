@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-native";
 import { useUserAPIState } from "@/store/UserAPIState";
 
 const SignUpScreen = () => {
@@ -10,25 +10,26 @@ const SignUpScreen = () => {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignUp = async () => {
     const newUser = {
       username: username,
-      firstName: firstname,
-      lastName: lastname,
+      firstname: firstname,
+      lastname: lastname,
       email: email,
       password: password,
-      phoneNumber: phonenumber,
+      phonenumber: phonenumber,
       cancelAlarmCode: 1234,
       customDangerMessage: "I'm in danger!",
       selectedContacts: [],
     };
-    await signUpNewUser(newUser);
+    await signUpNewUser(newUser, setErrorMessage);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>Register new user</Text>
 
       <TextInput
         style={styles.input}
@@ -70,7 +71,13 @@ const SignUpScreen = () => {
         onChangeText={setPhonenumber}
       />
 
-      <Button title="Sign Up" onPress={handleSignUp} />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttons} onPress={handleSignUp}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+          <Text>{errorMessage}</Text>
+        </View>
+
     </View>
   );
 };
@@ -90,9 +97,27 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 10,
+    padding: 12,
     marginBottom: 12,
     borderRadius: 5,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  buttons: {
+    backgroundColor: '#ff9fb2aa',
+    padding: 13,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ffa3a8',
+    width: '70%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold', 
+    fontSize: 16,
   },
 });
 

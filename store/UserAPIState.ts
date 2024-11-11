@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { ContactsInterface, UserInterface } from "@/Types";
+import { ContactsInterface, RootStackParamList, UserInterface } from "@/Types";
 import { Session } from '@supabase/supabase-js'
+import { StackNavigationProp } from "@react-navigation/stack";
+
 
 
 interface UserAPIState {
@@ -9,8 +11,8 @@ interface UserAPIState {
   contactsList: ContactsInterface[];
   setUserIdState: () => void;
   fetchUserById: (userId: string) => void;
-  signUpNewUser: (newUser: UserInterface) => Promise<void>;
-  signInUser: (email: string, password: string) => Promise<void>;
+  signUpNewUser: (newUser: UserInterface, setErrorMessage: React.Dispatch<React.SetStateAction<string>>) => Promise<void>;
+  signInUser: (email: string, password: string, navigation: StackNavigationProp<RootStackParamList>, setErrorMessage: React.Dispatch<React.SetStateAction<string>>) => Promise<void>;
   updateUserInformation: (newUserInformation: UserInterface) => Promise<void>;
   signOutSession: () => Promise<void>;
   fetchUserContactList: () => Promise<void>;
@@ -58,42 +60,68 @@ export const useUserAPIState = create<UserAPIState>((set, get) => ({
     }
   },
 
-  signUpNewUser: async (newUser: UserInterface) => {
+  signUpNewUser: async (
+    newUser: UserInterface, 
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>
+  ) => {
     try {
       const { data, error } = await supabase
         .from("users")
         .insert([newUser])
         .select();
-
-      if (error) throw error;
+  
+      if (error) {
+        setErrorMessage(error.message);
+        throw error; 
+      }
+  
       if (data) {
         set({ currentUser: data[0] });
       }
     } catch (error) {
       console.error("Error signing up user:", error);
+      setErrorMessage("An error occurred. Please try again later.");
     }
   },
+  
 
-  signInUser: async (email: string, password: string) => {
+  signInUser: async (
+    email: string, 
+    password: string,   
+    navigation: StackNavigationProp<RootStackParamList>,
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+
+    console.log("inside method")
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      console.log("after api call")
+
   
-      if (error) throw error;
+      if (error) setErrorMessage(error.message);
+
+      console.log("after throw error")
+
   
       const { user } = data;
       if (user) {
+        console.log("show if user")
+
         try {
           const { data: users, error: fetchError } = await supabase
             .from("users")
             .select("*")
             .eq("id", user.id);
   
-          if (fetchError) throw fetchError;
+          if (fetchError) setErrorMessage(fetchError.message);
           if (users && users.length > 0) {
             set({ currentUser: users[0] });
+            console.log("User supposedly saved: ", user)
+            navigation.navigate("Home");
+
           }
         } catch (fetchError) {
           console.error("Error fetching user:", fetchError);
@@ -191,7 +219,6 @@ export const useUserAPIState = create<UserAPIState>((set, get) => ({
     }
   },
 
-  // Update user information in the database
   updateUserInformation: async (newUserInformation: UserInterface) => {
     const { currentUser } = get();
     if (!currentUser._id) return;

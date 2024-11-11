@@ -2,11 +2,11 @@
 export interface UserInterface {
     _id?: string,
     username: string,
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     email: string,
     password?: string,
-    phoneNumber: string,
+    phonenumber: string,
     cancelAlarmCode: number,
     customDangerMessage: string,
     selectedContacts: ContactsInterface[];
@@ -18,4 +18,13 @@ export interface ContactsInterface {
     lastName: string,
     phoneNumber: string
 }
+
+
+
+export type RootStackParamList = {
+    SignIn: undefined;
+    SignUp: undefined;
+    Home: undefined;
+  };
+  
 
